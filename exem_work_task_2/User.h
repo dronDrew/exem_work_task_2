@@ -9,8 +9,10 @@ public:
 	User(std::string Login, std::string Pass);//done
 	//virtual bool Save_to_DB();
 	bool operator == (User &other);//done
+	bool operator != (User& other);//done
 	bool SameLogin(User& other);//done
 	bool SameLogin(std::string &a);//done
+	User& operator ->();//done
 };
 //class Admin
 class Admin :public User {

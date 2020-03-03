@@ -6,6 +6,12 @@ User::User(std::string Login, std::string Pass) {
 bool User::operator == (User& other) {
 	return this->Login == other.Login && this->Pass == other.Pass;
 }
+bool User::operator != (User& other) {
+	return this->Login != other.Login && this->Pass != other.Pass;
+}
+User& User::operator ->() {
+return *this;
+}
 bool User::SameLogin(User& other) {
 	return this->Login == other.Login;
 }

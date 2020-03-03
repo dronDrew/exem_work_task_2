@@ -4,7 +4,8 @@
 class Program
 {
 	std::vector<User> alluser;
-	User* current;
+	Admin* InWork;
+	Guest* Logined;
 	bool InitDB();//done
 public:
 	Program(); //done
@@ -17,3 +18,5 @@ public:
 	void Run();
 };
 
+void Crypting_str(std::string &str);
+void DeCrypting_str(std::string &str);
