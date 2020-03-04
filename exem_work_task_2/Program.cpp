@@ -1,6 +1,6 @@
 #include "Program.h"
 //crypting and decrypting func
-void Crypting_str(std::string &str) {
+void Crypting_str(std::string& str) {
 	for (int i = 0; i < str.length(); i++)
 	{
 		if (i % 2) {
@@ -13,7 +13,7 @@ void Crypting_str(std::string &str) {
 	}
 
 }
-void DeCrypting_str(std::string &str) {
+void DeCrypting_str(std::string& str) {
 	for (int i = 0; i < str.length(); i++)
 	{
 		if (i % 2) {
@@ -104,6 +104,7 @@ void Program::Registration() {
 	if (this->alluser[0] != temp)
 	{
 		this->RegisterGuest();
+		this->LoginMenu();
 	}
 	else
 	{
@@ -115,9 +116,11 @@ void Program::Registration() {
 		{
 		case 1:
 			this->RegisterAdmin();
+			this->LoginMenu();
 			break;
 		case 0:
 			this->RegisterGuest();
+			this->LoginMenu();
 			break;
 		default:
 			this->LoginMenu();
@@ -156,12 +159,19 @@ void Program::RegisterGuest() {
 		}
 
 	} while (res);
-	std::cout << "Enter Pass\n";
-	std::cin >> Pass;
-	Crypting_str(Login);
-	Crypting_str(Pass);
+	std::cout << "Enter Pass (6 symbols)\n";
+	int i = 0;
+	while (i < 6)
+	{
+		Pass += _getch();
+		std::cout << "*";
+		i++;
+	}
+	std::cout << "\n";
 	Guest newGuest(Login, Pass);
 	this->alluser.push_back(newGuest);
+	Crypting_str(Login);
+	Crypting_str(Pass);
 	std::ofstream file;
 	file.open("Guests.bin",std::ios::binary|std::ios::app);
 	if (file.is_open())
@@ -190,13 +200,20 @@ void Program::RegisterAdmin()
 	std::cout << "Registre like Admin\n";
 	std::cout << "Enter Login\n";
 	std::cin >> Login;
-	std::cout << "Enter Pass\n";
-	std::cin >> Pass;
-	Crypting_str(Login);
-	Crypting_str(Pass);
+	std::cout << "Enter Pass (6 symbols)\n";
+	int i = 0;
+	while (i < 6)
+	{
+		Pass += _getch();
+		std::cout << "*";
+		i++;
+	}
+	std::cout << "\n";
 	Admin NewAdmin(Login, Pass);
 	this->alluser[0] = NewAdmin;
 	std::ofstream file;
+	Crypting_str(Login);
+	Crypting_str(Pass);
 	file.open("tempAdin.bin", std::ios::binary);
 	if (file.is_open())
 	{
@@ -216,8 +233,15 @@ void Program::LoginMenu() {
 	std::string Login, Password;
 	std::cout << "Enter Login\n";
 	std::cin >> Login;
-	std::cout << "Enter Password\n";
-	std::cin >> Password;
+	std::cout << "Enter Pass (6 symbols)\n";
+	int i = 0;
+	while (i < 6)
+	{
+		Password += _getch();
+		std::cout << "*";
+		i++;
+	}
+	std::cout << "\n";
 	User temp(Login, Password);
 	for (auto var : this->alluser)
 	{
@@ -244,10 +268,53 @@ void Program::LoginMenu() {
 void  Program::Menu() {
 	if (this->InWork!=nullptr)
 	{
-		//Menu for Admin
+		std::ofstream file;
+		Admin NewAdmin;
+		std::pair<std::string, std::string>temp;
+		int choice{ 0 };
+		std::cout << "Welcome Admin\n";
+		std::cout << "Press 1 to change Profile info\n";
+		std::cout << "Press 2 to Test controll\n";
+		std::cout << "Press 3 to User controll\n";
+		std::cout << "Press 4 to Show Statistic\n";
+		std::cin >> choice;
+		switch (choice)
+		{
+		case 1:
+			temp= this->InWork->ChangeLoginAndPass();
+			NewAdmin.Set(temp.first, temp.second);
+			this->alluser[0] = NewAdmin;
+			
+			Crypting_str(temp.first);
+			Crypting_str(temp.second);
+			file.open("tempAdin.bin", std::ios::binary);
+			if (file.is_open())
+			{
+				auto size = static_cast<int>(temp.first.size());
+				file.write(reinterpret_cast<char*>(&size), sizeof(size));
+				file.write(temp.first.data(), temp.first.size());
+				size = static_cast<int>(temp.second.size());
+				file.write(reinterpret_cast<char*>(&size), sizeof(size));
+				file.write(temp.second.data(), temp.second.size());
+			}
+			file.close();
+			delete this->InWork;
+			this->LoginMenu();
+			break;
+		case 2:
+			this->InWork->TestControl();
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+		default:
+			exit(0);
+			break;
+		}
 	}
 	else {
-	   //Menu for Guest
+		std::cout << "Welcome Guest\n";
 	
 	
 	}

@@ -3,9 +3,11 @@
 //Beginig of standart classes of program
 class User
 {
+protected:
 	std::string Login;
 	std::string Pass;
 public:
+	User();
 	User(std::string Login, std::string Pass);//done
 	//virtual bool Save_to_DB();
 	bool operator == (User &other);//done
@@ -17,11 +19,13 @@ public:
 //class Admin
 class Admin :public User {
 public:
+	Admin();
 	Admin(std::string Login, std::string Pass);//done
-	bool ChangeLoginAndPass();
+	std::pair<std::string,std::string> ChangeLoginAndPass();//done
 	bool UserControl();
 	bool TestControl();
 	void ReviewStatistic();
+	bool Set(std::string Login, std::string Pass);//done
 	//bool Save_to_DB()override;
 };
 //class Guest
@@ -36,3 +40,4 @@ public:
 	void GetTest();
 	//bool Save_to_DB()override;
 };
+void Answear_cypt(std::string& a);
