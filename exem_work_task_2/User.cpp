@@ -14,6 +14,8 @@ void Answear_cypt(std::string& a) {
 
 }
 
+
+//User
 User::User(std::string Login, std::string Pass) {
 	this->Login = Login;
 	this->Pass = Pass;
@@ -33,6 +35,9 @@ bool User::SameLogin(User& other) {
 }
 bool User::SameLogin(std::string& a ) {
 	return this->Login == a;
+}
+std::string User::GetLogin() {
+	return this->Login;
 }
 //Admin
 Admin::Admin(std::string Login, std::string Pass) :User(Login, Pass) {}

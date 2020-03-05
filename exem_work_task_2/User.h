@@ -14,6 +14,7 @@ public:
 	bool operator != (User& other);//done
 	bool SameLogin(User& other);//done
 	bool SameLogin(std::string &a);//done
+	std::string GetLogin();//done
 	User& operator ->();//done
 };
 //class Admin
@@ -22,9 +23,11 @@ public:
 	Admin();
 	Admin(std::string Login, std::string Pass);//done
 	std::pair<std::string,std::string> ChangeLoginAndPass();//done
-	bool UserControl();
+	//user controll
+	std::pair<std::string, std::string>CreateNewUserLoginAndPass();
+	std::string SelectLoginGuest();
+	//Test controll
 	bool TestControl();//done
-	void ReviewStatistic();
 	bool Set(std::string Login, std::string Pass);//done
 	//bool Save_to_DB()override;
 };
@@ -36,7 +39,6 @@ class Guest :public User {
 	std::string PhoneNumber;
 public:
 	Guest(std::string Login, std::string Pass);//done
-	void ReviewStatistic();
 	void GetTest();
 	//bool Save_to_DB()override;
 };
