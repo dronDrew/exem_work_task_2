@@ -23,7 +23,7 @@ public:
 	Admin(std::string Login, std::string Pass);//done
 	std::pair<std::string,std::string> ChangeLoginAndPass();//done
 	bool UserControl();
-	bool TestControl();
+	bool TestControl();//done
 	void ReviewStatistic();
 	bool Set(std::string Login, std::string Pass);//done
 	//bool Save_to_DB()override;

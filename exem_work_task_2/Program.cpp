@@ -273,8 +273,8 @@ void  Program::Menu() {
 		std::pair<std::string, std::string>temp;
 		int choice{ 0 };
 		std::cout << "Welcome Admin\n";
-		std::cout << "Press 1 to change Profile info\n";
-		std::cout << "Press 2 to Test controll\n";
+		std::cout << "Press 1 to change Profile info\n";//done
+		std::cout << "Press 2 to Test controll\n";//done
 		std::cout << "Press 3 to User controll\n";
 		std::cout << "Press 4 to Show Statistic\n";
 		std::cin >> choice;
@@ -303,6 +303,8 @@ void  Program::Menu() {
 			break;
 		case 2:
 			this->InWork->TestControl();
+			system("CLS");
+			this->Menu();
 			break;
 		case 3:
 			break;

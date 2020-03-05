@@ -61,6 +61,7 @@ bool Admin::Set(std::string Login, std::string Pass) {
 	return true;
 }
 bool Admin::TestControl() {
+	char a;
 	int choice{ 0 };
 	std::ofstream file_in;
 	std::ifstream file_out;
@@ -68,9 +69,9 @@ bool Admin::TestControl() {
 	std::filesystem::path curr=std::filesystem::current_path();
 	std::filesystem::path temp;
 	std::cout << " Press 1 Create Category of test\n";//done
-	std::cout << " Press 2 Import test\n";
+	std::cout << " Press 2 Import test\n";//done
 	std::cout << " Press 3 Create test\n";//done
-	std::cout << " Press 4 Add question\n";
+	std::cout << " Press 4 Add question\n";//done
 	std::cin >> choice;
 	switch (choice)
 	{
@@ -80,7 +81,6 @@ bool Admin::TestControl() {
 		std::filesystem::create_directory(curr / info_temp_manipulate);
 		break;
 	case 2:
-		//remake for non empty file
 		std::cout << "Enter name of categoty in wich you want import file:\n";
 		std::cin >> info_temp_manipulate;
 		curr /= info_temp_manipulate;
@@ -91,8 +91,20 @@ bool Admin::TestControl() {
 		std::cin >> info_temp_manipulate;
 		temp /= info_temp_manipulate;
 		curr /= temp.filename();
-		std::filesystem::rename(temp,curr);
-
+		file_out.open(temp);
+		file_in.open(curr);
+		while (!file_out.eof())
+		{
+			std::getline(file_out,info_temp_manipulate);
+			if (file_out.eof()) {
+				break;
+			}
+			file_in << info_temp_manipulate;
+			file_in << "\n";
+		}
+		file_out.close();
+		file_in.close();
+		std::filesystem::remove(temp);
 		break;
 	case 3:
 		std::cout << "Enter name of caregory in wich you want create test:\n";
@@ -130,7 +142,27 @@ bool Admin::TestControl() {
 		}
 		break;
 	case 4:
-		
+		std::cout << "Enter name a subject in wich you want to add questions and answers :\n";
+		std::cin >> info_temp_manipulate;
+		curr /= info_temp_manipulate;
+		std::cout << "Enter name of test with extension\n";
+		std::cin >> info_temp_manipulate;
+		curr /= info_temp_manipulate;
+		file_in.open(curr,std::ofstream::app);
+		std::cin.ignore();
+		do {
+			std::cout << "Enter question:\n";
+			std::getline(std::cin, info_temp_manipulate);
+			file_in << info_temp_manipulate;
+			file_in << "\n";
+			std::cout << "Enter correct answer\n";
+			std::getline(std::cin, info_temp_manipulate);
+			Answear_cypt(info_temp_manipulate);
+			file_in << info_temp_manipulate;
+			file_in << "\n";
+			std::cout << "Enter ESC to Exit and Enter to go on\n";
+		} while (_getch() != 27);
+		file_in.close();
 		break;
 	default:
 		break;
