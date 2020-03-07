@@ -13,7 +13,35 @@ void Answear_cypt(std::string& a) {
 	}
 
 }
+//crypting and decrypting func
+std::string Crypting_str_us(std::string str) {
+	for (int i = 0; i < str.length(); i++)
+	{
+		if (i % 2) {
+			str[i] = str[i] + 7;
+		}
+		else
+		{
+			str[i] = str[i] - 7;
+		}
+	}
+	return str;
 
+}
+std::string DeCrypting_str_us(std::string str) {
+	for (int i = 0; i < str.length(); i++)
+	{
+		if (i % 2) {
+			str[i] = str[i] - 7;
+		}
+		else
+		{
+			str[i] = str[i] + 7;
+		}
+	}
+	return str;
+
+}
 
 //User
 User::User(std::string Login, std::string Pass) {
@@ -39,6 +67,22 @@ bool User::SameLogin(std::string& a ) {
 std::string User::GetLogin() {
 	return this->Login;
 }
+bool User::Set(std::string Login, std::string Pass) {
+	this->Login = Login;
+	this->Pass = Pass;
+	return true;
+}
+void User::Save_to_DB(std::ofstream& file) {
+	std::string Log, Pass;
+	Log=Crypting_str_us(this->Login);
+	Pass=Crypting_str_us(this->Pass);
+	auto size = static_cast<int>(Log.size());
+	file.write(reinterpret_cast<char*>(&size), sizeof(size));
+	file.write(Log.data(), Log.size());
+	size = static_cast<int>(Pass.size());
+	file.write(reinterpret_cast<char*>(&size), sizeof(size));
+	file.write(Pass.data(),Pass.size());
+}
 //Admin
 Admin::Admin(std::string Login, std::string Pass) :User(Login, Pass) {}
 Admin::Admin():User(){}
@@ -60,11 +104,7 @@ std::pair<std::string, std::string> Admin::ChangeLoginAndPass() {
 	return newinfo;
 
 }
-bool Admin::Set(std::string Login, std::string Pass) {
-	this->Login = Login;
-	this->Pass = Pass;
-	return true;
-}
+
 bool Admin::TestControl() {
 	char a;
 	int choice{ 0 };
@@ -174,5 +214,27 @@ bool Admin::TestControl() {
 	}
 	return true;
 }
+std::pair<std::string, std::string>Admin::CreateNewUserLoginAndPass() {
+	int passLenght{ 6 };
+	std::string LoginForcreating, PassToLogin;
+	std::cout << "Enter Login for new User\n";
+	std::cin >> LoginForcreating;
+	std::cout << "Enter Pass for this user(6 symbols)\n";
+	while (passLenght>0)
+	{
+		PassToLogin += _getch();
+		std::cout << "*";
+		passLenght--;
+	}
+	std::pair<std::string, std::string>res(LoginForcreating, PassToLogin);
+	return res;
+
+}
+std::string Admin::SelectLoginGuest() {
+	std::string selectedLogin;
+	std::cin >> selectedLogin;
+	return selectedLogin;
+}
 //Guest
 Guest::Guest(std::string Login, std::string Pass) : User(Login, Pass) {}
+Guest::Guest():User() {};

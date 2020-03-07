@@ -248,10 +248,12 @@ void Program::LoginMenu() {
 		if (temp==var&&temp==this->alluser[0])
 		{
 			this->InWork = new Admin(Login, Password);
+			break;
 		}
 		else if(temp==var)
 		{
 			this->Logined = new Guest(Login, Password);
+			break;
 		}
 	}
 	if (this->InWork!=nullptr||this->Logined!=nullptr)
@@ -307,6 +309,7 @@ void  Program::Menu() {
 			this->Menu();
 			break;
 		case 3:
+			this->UserControleMenu();
 			break;
 		case 4:
 			break;
@@ -322,3 +325,187 @@ void  Program::Menu() {
 	}
 
 }
+//User control menu
+void Program:: UserControleMenu() {
+	unsigned int chooice{ 0 };
+	Guest temp;
+	int itemp = 0;
+	std::ofstream file;
+	std::ifstream newfile;
+	std::string Name, Sername, Adress, Phone,LoginPick;
+	std::string newName, newSername, newAdress, newPhone, temp1;
+	std::pair<std::string, std::string> LogAndPass;
+	auto iter = this->alluser.begin();
+	std::cout << "Press 1 to create new Guest\n";//done
+	std::cout << "Press 2 to Edit Guest info\n";//done work but need rebuild
+	std::cout << "Press 3 to delete user from database\n";//done
+	std::cin >> chooice;
+	switch (chooice)
+	{
+		case 1:
+		    LogAndPass = this->InWork->CreateNewUserLoginAndPass();
+			temp.Set(LogAndPass.first, LogAndPass.second);
+			this->alluser.push_back(temp);
+			Crypting_str(LogAndPass.first);
+			Crypting_str(LogAndPass.second);
+			file.open("Guests.bin", std::ios::binary | std::ios::app);
+			if (file.is_open())
+			{
+				auto size = static_cast<int>(LogAndPass.first.size());
+				file.write(reinterpret_cast<char*>(&size), sizeof(size));
+				file.write(LogAndPass.first.data(), LogAndPass.first.size());
+				size = static_cast<int>(LogAndPass.second.size());
+				file.write(reinterpret_cast<char*>(&size), sizeof(size));
+				file.write(LogAndPass.second.data(), LogAndPass.second.size());
+			}
+			file.close();
+			std::cout << "Enter name\n";
+			std::cin >> Name;
+			std::cout << "Enter sername\n";
+			std::cin >> Sername;
+			std::cout << "Enter Adress\n";
+			std::cin >> Adress;
+			std::cout << "Enter Phonenumber\n";
+			std::cin >> Phone;
+			file.open("Guests_info.txt", std::ios::app);
+			if (file.is_open()) {
+				file << Name << std::endl;
+				file << Sername << std::endl;
+				file << Adress << std::endl;
+				file << Phone << std::endl;
+			}
+			file.close();
+			break;
+		case 2:
+			this->PringInfoGuest();
+			std::cout << "Enter Name for Editing\n";
+			std::cin >> Name;
+			std::cout << "Enter new Name \n";
+			std::cin >> newName;
+			std::cout << "Enter Surname for Editing\n";
+			std::cin >> Sername;
+			std::cout << "Enter new Surname \n";
+			std::cin >> newSername;
+			std::cout << "Enter Adress for Editing\n";
+			std::cin >> Adress;
+			std::cout << "Enter new Adress \n";
+			std::cin >> newAdress;
+			std::cout << "Enter Phone number for Editing\n";
+			std::cin >> Phone;
+			std::cout << "Enter new Phone number \n";
+			std::cin >> newPhone;
+			newfile.open("Guests_info.txt");
+			file.open("Gnew.txt");
+			while (!newfile.eof())
+			{	
+				newfile >> temp1;
+				if (newfile.eof())
+				{
+					break;
+				}
+				temp1.replace(temp1.find(Name), Name.length(), newName);
+				file << temp1 << "\n";
+				newfile >> temp1;
+				temp1.replace(temp1.find(Sername), Sername.length(), newSername);
+				file << temp1 << "\n";
+				newfile >> temp1;
+				temp1.replace(temp1.find(Adress), Adress.length(), newAdress);
+				file << temp1 << "\n";
+				newfile >> temp1;
+				temp1.replace(temp1.find(Phone), Phone.length(), newPhone);
+				file << temp1 << "\n";
+			}
+			file.close();
+			newfile.close();
+			remove("Guests_info.txt");
+			rename("Gnew.txt", "Guests_info.txt");
+			break;
+		case 3:
+			this->PringInfoGuest();
+			LoginPick = this->InWork->SelectLoginGuest();
+			for (int i = 0; i < this->alluser.size(); i++)
+			{
+				if (LoginPick == this->alluser[i].GetLogin()) {
+					chooice = i;
+					break;
+				}
+			}
+			std::advance(iter, chooice);
+			this->alluser.erase(iter);
+			file.open("Guests.bin");
+			for (auto i = this->alluser.begin(); i != this->alluser.end(); i++,itemp++)
+			{
+				if (itemp!=0)
+				{
+					i->Save_to_DB(file);
+				}
+				
+			}
+			file.close();
+			itemp = 0;
+			newfile.open("Guests_info.txt");
+			file.open("Gnew.txt");
+			while (!newfile.eof())
+			{
+				if (itemp == chooice - 1) {
+					newfile >> Name;
+					if (newfile.eof())
+					{
+						break;
+					}
+					newfile >> Sername;
+					newfile >> Adress;
+					newfile >> Phone;
+				}
+				newfile >> Name;
+				if (newfile.eof())
+				{
+					break;
+				}
+				newfile >> Sername;
+				newfile >> Adress;
+				newfile >> Phone;
+				file << Name << "\n";
+				file << Sername << "\n";
+				file << Adress << "\n";
+				file << Phone << "\n";
+				itemp++;
+			}
+			file.close();
+			newfile.close();
+			remove("Guests_info.txt");
+			rename("Gnew.txt", "Guests_info.txt");
+			break;
+	default:
+		break;
+	}
+}
+
+void Program::PringInfoGuest() {
+	std::ifstream file;
+	std::string temp;
+	file.open("Guests_info.txt");
+	int i = 0,j=4;
+	for (auto iter = this->alluser.begin(); iter != this->alluser.end(); iter++,i++) {
+		if (i!=0)
+		{
+			std::cout << "Login :\n";
+			std::cout << iter->GetLogin();
+			std::cout << std::endl;
+			std::cout << "Info about Guest:\n";
+			while (j>0)
+			{
+				file >> temp;
+				std::cout << temp;
+				std::cout << "\n";
+				j--;
+			}
+			
+			
+		}
+		j = 4;
+	}
+	file.close();
+
+}
+

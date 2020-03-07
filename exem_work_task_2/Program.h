@@ -16,6 +16,8 @@ public:
 	void LoginMenu();//done
 	void Menu();
 	void Run();
+	void UserControleMenu();//done
+	void PringInfoGuest();//done
 };
 
 void Crypting_str(std::string &str);

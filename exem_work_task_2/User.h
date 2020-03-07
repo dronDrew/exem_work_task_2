@@ -9,12 +9,13 @@ protected:
 public:
 	User();
 	User(std::string Login, std::string Pass);//done
-	//virtual bool Save_to_DB();
+	void Save_to_DB(std::ofstream& file);
 	bool operator == (User &other);//done
 	bool operator != (User& other);//done
 	bool SameLogin(User& other);//done
 	bool SameLogin(std::string &a);//done
 	std::string GetLogin();//done
+	bool Set(std::string Login, std::string Pass);//done
 	User& operator ->();//done
 };
 //class Admin
@@ -24,11 +25,11 @@ public:
 	Admin(std::string Login, std::string Pass);//done
 	std::pair<std::string,std::string> ChangeLoginAndPass();//done
 	//user controll
-	std::pair<std::string, std::string>CreateNewUserLoginAndPass();
-	std::string SelectLoginGuest();
+	std::pair<std::string, std::string>CreateNewUserLoginAndPass();//done
+	std::string SelectLoginGuest();//done
 	//Test controll
 	bool TestControl();//done
-	bool Set(std::string Login, std::string Pass);//done
+	//done
 	//bool Save_to_DB()override;
 };
 //class Guest
@@ -38,8 +39,11 @@ class Guest :public User {
 	std::string Adress;
 	std::string PhoneNumber;
 public:
+	Guest();//done
 	Guest(std::string Login, std::string Pass);//done
 	void GetTest();
 	//bool Save_to_DB()override;
 };
-void Answear_cypt(std::string& a);
+void Answear_cypt(std::string& a);//done
+std::string Crypting_str_us(std::string str);//done
+std::string DeCrypting_str_us(std::string str);//done
