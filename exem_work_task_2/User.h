@@ -1,6 +1,6 @@
 #pragma once
 #include "dependies.h"
-//Beginig of standart classes of program
+//Begin of standart classes of program
 class User
 {
 protected:
@@ -30,18 +30,15 @@ public:
 	//Test controll
 	bool TestControl();//done
 	//done
-	//bool Save_to_DB()override;
+	void GetStatistic();
 };
 //class Guest
 class Guest :public User {
-	std::string Name;
-	std::string Sername;
-	std::string Adress;
-	std::string PhoneNumber;
 public:
 	Guest();//done
 	Guest(std::string Login, std::string Pass);//done
-	void GetTest();
+	void GetTest();//done
+	void ShowStatistic();//done
 	//bool Save_to_DB()override;
 };
 void Answear_cypt(std::string& a);//done

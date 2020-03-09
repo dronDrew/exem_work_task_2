@@ -13,6 +13,19 @@ void Answear_cypt(std::string& a) {
 	}
 
 }
+void Answear_Decypt(std::string& a) {
+	for (int i = 0; i < a.length(); i++)
+	{
+		if (i % 2) {
+			a[i] -= 3;
+		}
+		else
+		{
+			a[i] += 2;
+		}
+	}
+
+}
 //crypting and decrypting func
 std::string Crypting_str_us(std::string str) {
 	for (int i = 0; i < str.length(); i++)
@@ -104,7 +117,31 @@ std::pair<std::string, std::string> Admin::ChangeLoginAndPass() {
 	return newinfo;
 
 }
-
+void::Admin::GetStatistic() {
+	std::ifstream file_statist;
+	std::string info;
+	std::set<std::string> DB;
+	file_statist.open("Statistic.txt");
+	if (!file_statist.is_open())
+	{
+		std::cout << "Statistic is empty\n";
+	}
+	else {
+		while (!file_statist.eof())
+		{
+			std::getline(file_statist, info);
+			if (file_statist.eof()) {
+				break;
+			}
+			DB.insert(info);
+		}
+		file_statist.close();
+		for (auto i =DB.begin(); i != DB.end(); i++)
+		{
+			std::cout << *i << std::endl;
+		}
+	}
+}
 bool Admin::TestControl() {
 	char a;
 	int choice{ 0 };
@@ -126,10 +163,10 @@ bool Admin::TestControl() {
 		std::filesystem::create_directory(curr / info_temp_manipulate);
 		break;
 	case 2:
-		std::cout << "Enter name of categoty in wich you want import file:\n";
+		std::cout << "Enter name of category in witch you want import file:\n";
 		std::cin >> info_temp_manipulate;
 		curr /= info_temp_manipulate;
-		std::cout << "Enter full path to test  wich you want import\n";
+		std::cout << "Enter full path to test  witch you want import\n";
 		std::cin >> info_temp_manipulate;
 		temp = info_temp_manipulate;
 		std::cout << "Enter name of test with extension:\n";
@@ -170,12 +207,13 @@ bool Admin::TestControl() {
 			while (choice < 12)
 			{
 				std::cout << "Enter question:\n";
-				std::cin.ignore();
+				if (choice == 0) {
+					std::cin.ignore();
+				}
 				std::getline(std::cin, info_temp_manipulate);
 				file_in << info_temp_manipulate;
 				file_in << "\n";
 				std::cout << "Enter correct answer\n";
-				std::cin.ignore();
 				std::getline(std::cin, info_temp_manipulate);
 				Answear_cypt(info_temp_manipulate);
 				file_in << info_temp_manipulate;
@@ -187,7 +225,7 @@ bool Admin::TestControl() {
 		}
 		break;
 	case 4:
-		std::cout << "Enter name a subject in wich you want to add questions and answers :\n";
+		std::cout << "Enter name a subject in witch you want to add questions and answers :\n";
 		std::cin >> info_temp_manipulate;
 		curr /= info_temp_manipulate;
 		std::cout << "Enter name of test with extension\n";
@@ -238,3 +276,112 @@ std::string Admin::SelectLoginGuest() {
 //Guest
 Guest::Guest(std::string Login, std::string Pass) : User(Login, Pass) {}
 Guest::Guest():User() {};
+
+void Guest::GetTest() {
+	std::string Temp_info,answers;
+	std::vector<int>answ;
+	std::filesystem::path curr = std::filesystem::current_path();
+	std::filesystem::path tpath;
+	std::filesystem::directory_iterator begin(curr);
+	std::filesystem::directory_iterator end;
+	std::cout << "Curses available to take test:\n";
+	for (begin; begin!=end; begin++)
+	{
+		if (begin->is_directory())
+		{
+			tpath = *begin;
+			if (tpath.filename() != "x64") {
+				std::cout << tpath.filename() << std::endl;
+			}
+		}
+	}
+	std::cout << "Enter Name of Curse:\n";
+	std::cin >> Temp_info;
+	curr /= Temp_info;
+	std::filesystem::directory_iterator begin_sec(curr);
+	std::filesystem::directory_iterator end_sec;
+	std::cout << "Test available to Get:\n";
+	for (begin_sec; begin_sec != end_sec; begin_sec++)
+	{
+		if (begin_sec->is_regular_file())
+		{
+			tpath = *begin_sec;
+		    std::cout << tpath.filename() << std::endl;
+			
+		}
+	}
+	std::cout << "Enter Name of test with extension:\n";
+	std::cin >> Temp_info;
+	curr /= Temp_info;
+	std::ifstream file;
+	file.open(curr);
+	while (!file.eof())
+	{
+		std::getline(file, Temp_info);
+		if (answ.empty())
+		{
+			std::cin.ignore();
+		}
+		if (file.eof())
+		{
+			break;
+		}
+		std::cout << Temp_info << std::endl;
+		std::getline(file, Temp_info);
+		Answear_Decypt(Temp_info);
+		std::getline(std::cin, answers);
+		for (int i = 0; i < Temp_info.length(); i++)
+		{
+			Temp_info[i] = std::tolower(Temp_info[i]);
+		}
+		for (int i = 0; i < answers.length(); i++)
+		{
+			answers[i] = std::tolower(answers[i]);
+		}
+		if (Temp_info==answers)
+		{
+			answ.push_back(1);
+		}
+		else {
+		
+			answ.push_back(0);
+		}
+	}
+	file.close();
+	int res{ 0 }, total_quest{0};
+	for (auto i =answ.begin(); i != answ.end(); i++)
+	{
+		res += *i;
+	}
+	total_quest = ((res * 100) / answ.size());
+	if (total_quest >65)
+	{
+		std::cout << "You Pass Test with result : " << total_quest << std::endl;
+	}
+	else
+	{
+		std::cout << "You did not pass Test, your result : " << total_quest << std::endl;
+	}
+	std::ofstream file_statist;
+	file_statist.open("Statistic.txt",std::ios::app);
+	tpath = curr.parent_path();
+	file_statist << this->Login.c_str()<<" "<<tpath.filename() << " " <<curr.filename() << " " <<total_quest<<"\n";
+	file_statist.close();
+}
+void Guest::ShowStatistic() {
+	std::string info;
+	std::ifstream file_statist;
+	file_statist.open("Statistic.txt");
+	while (!file_statist.eof())
+	{
+		std::getline(file_statist, info);
+		if (file_statist.eof()) {
+			break;
+		}
+		if (info.substr(0, this->Login.length()) == this->GetLogin()) {
+			std::cout << info << std::endl;
+		}
+	}
+	
+	file_statist.close();
+}

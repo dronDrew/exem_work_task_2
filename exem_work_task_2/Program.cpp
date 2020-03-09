@@ -277,8 +277,8 @@ void  Program::Menu() {
 		std::cout << "Welcome Admin\n";
 		std::cout << "Press 1 to change Profile info\n";//done
 		std::cout << "Press 2 to Test controll\n";//done
-		std::cout << "Press 3 to User controll\n";
-		std::cout << "Press 4 to Show Statistic\n";
+		std::cout << "Press 3 to User controll\n";//done
+		std::cout << "Press 4 to Show Statistic\n";//done
 		std::cin >> choice;
 		switch (choice)
 		{
@@ -312,6 +312,7 @@ void  Program::Menu() {
 			this->UserControleMenu();
 			break;
 		case 4:
+			this->InWork->GetStatistic();
 			break;
 		default:
 			exit(0);
@@ -319,9 +320,29 @@ void  Program::Menu() {
 		}
 	}
 	else {
+		int choice{ 0 };
 		std::cout << "Welcome Guest\n";
-	
-	
+		std::cout << "Press 1 to get Test\n";
+		std::cout << "Press 2 to Show statistic\n";
+		std::cout << "Press 3 to exit\n";
+		std::cin >> choice;
+		switch (choice)
+		{
+		case 1:
+			this->Logined->GetTest();
+			this->Menu();
+			break;
+		case 2:
+			this->Logined->ShowStatistic();
+			this->Menu();
+			break;
+		case 3:
+			exit(0);
+			break;
+		default:
+			this->Menu();
+			break;
+		}
 	}
 
 }

@@ -1,0 +1,4 @@
+ZXC "Math" "test.txt" 87
+ppp "Math" "test.txt" 75
+plm "Math" "test.txt" 62
+qaz "Paint" "test_1.txt" 8
